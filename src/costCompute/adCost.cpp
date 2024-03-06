@@ -45,7 +45,7 @@ float ADCostImpl::getWindowPixelsCost(const Mat &leftROI, const Mat &right,
                 auto rightPixel = right.ptr<Vec3b>(ry + i)[rx + j];
                 cost += (abs(static_cast<float>(leftPixel[0]) - rightPixel[0]) +
                          abs(static_cast<float>(leftPixel[1]) - rightPixel[1]) +
-                         abs(static_cast<float>(leftPixel[2]) - rightPixel[2]));
+                         abs(static_cast<float>(leftPixel[2]) - rightPixel[2])) / 3.f;
             } else {
                 cost += abs(static_cast<float>(leftROI.ptr<uchar>(
                                 halfHeight + i)[halfWidth + j]) -
@@ -69,10 +69,17 @@ void ADCostImpl::compute(const Mat &left, const Mat &right, Mat &out) {
     const int halfHeight = params_.windowHeight / 2;
 
 #pragma omp parallel for default(shared) schedule(static)
-    for (int i = halfHeight; i < out.rows - halfHeight; ++i) {
-        for (int j = halfWidth; j < out.cols - halfWidth; ++j) {
+    for (int i = 0; i < out.rows; ++i) {
+        for (int j = 0; j < out.cols; ++j) {
+
+            if(j < halfWidth || j > out.cols - halfWidth - 1 || i < halfHeight || i > out.rows - halfHeight - 1) {
+                for (int d = 0; d < dispRange; ++d) { out.ptr<float>(i)[dispRange * j + d] = FLT_MAX; }
+                continue;
+            }
+
             auto leftROI = left(Rect(j - halfWidth, i - halfHeight,
                                     params_.windowWidth, params_.windowHeight));
+
             for (int d = 0; d < dispRange; ++d) {
                 if(j - d < halfWidth || j - d > out.cols - halfWidth) {
                     out.ptr<float>(i)[dispRange * j + d] = FLT_MAX;

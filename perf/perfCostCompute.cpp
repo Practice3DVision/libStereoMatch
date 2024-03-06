@@ -32,10 +32,10 @@ class Cones : public benchmark::Fixture {
 
 BENCHMARK_DEFINE_F(Cones, perfADCostColor)(benchmark::State &state) {
     auto params = ADCost::Params();
-    params.windowWidth = state.range(0);
-    params.windowHeight = state.range(0);
+    params.windowWidth = 9;
+    params.windowHeight = 7;
     params.minDisp = 0;
-    params.maxDisp = state.range(1);
+    params.maxDisp = state.range(0);
     auto adCostComputer = ADCost::create(params);
     Mat out;
     for (auto _ : state) {
@@ -45,10 +45,10 @@ BENCHMARK_DEFINE_F(Cones, perfADCostColor)(benchmark::State &state) {
 
 BENCHMARK_DEFINE_F(Cones, perfADCostGray)(benchmark::State &state) {
     auto params = ADCost::Params();
-    params.windowWidth = state.range(0);
-    params.windowHeight = state.range(0);
+    params.windowWidth = 9;
+    params.windowHeight = 7;
     params.minDisp = 0;
-    params.maxDisp = state.range(1);
+    params.maxDisp = state.range(0);
     auto adCostComputer = ADCost::create(params);
     Mat out;
     transformToGray();
@@ -59,10 +59,10 @@ BENCHMARK_DEFINE_F(Cones, perfADCostGray)(benchmark::State &state) {
 
 BENCHMARK_DEFINE_F(Cones, perfCensusCost)(benchmark::State& state) {
     auto params = CensusCost::Params();
-    params.windowWidth = state.range(0);
-    params.windowHeight = state.range(0);
+    params.windowWidth = 9;
+    params.windowHeight = 7;
     params.minDisp = 0;
-    params.maxDisp = state.range(1);
+    params.maxDisp = state.range(0);
     auto censusCostComputer = CensusCost::create(params);
     Mat out;
     transformToGray();
@@ -71,8 +71,25 @@ BENCHMARK_DEFINE_F(Cones, perfCensusCost)(benchmark::State& state) {
     }
 }
 
-BENCHMARK_REGISTER_F(Cones, perfADCostColor)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->ArgsProduct({{3, 5, 7, 9, 11, 13, 15, 17, 19, 21}, {32, 64, 128, 256}});
-BENCHMARK_REGISTER_F(Cones, perfADCostGray)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->ArgsProduct({{3, 5, 7, 9, 11, 13, 15, 17, 19, 21}, {32, 64, 128, 256}});
-BENCHMARK_REGISTER_F(Cones, perfCensusCost)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->ArgsProduct({{3, 5, 7}, {32, 64, 128, 256}});
+BENCHMARK_DEFINE_F(Cones, perfADCensusCost)(benchmark::State& state) {
+    auto params = ADCensusCost::Params();
+    params.windowWidth = 9;
+    params.windowHeight = 7;
+    params.minDisp = 0;
+    params.maxDisp = state.range(0);
+    params.adWeight = 10.f;
+    params.censusWeight = 30.f;
+    auto adcensusCostComputer = ADCensusCost::create(params);
+    Mat out;
+    transformToGray();
+    for (auto _ : state) {
+        adcensusCostComputer->compute(left, right, out);
+    }
+}
+
+BENCHMARK_REGISTER_F(Cones, perfADCostColor)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->DenseRange(32, 256, 32);
+BENCHMARK_REGISTER_F(Cones, perfADCostGray)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->DenseRange(32, 256, 32);
+BENCHMARK_REGISTER_F(Cones, perfCensusCost)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->DenseRange(32, 256, 32);
+BENCHMARK_REGISTER_F(Cones, perfADCensusCost)->MeasureProcessCPUTime()->UseRealTime()->Unit(benchmark::TimeUnit::kSecond)->DenseRange(32, 256, 32);
 
 BENCHMARK_MAIN();

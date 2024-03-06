@@ -28,6 +28,7 @@ class LIBSM_API CensusCost : public CostComputer {
      * 
      */
     struct Params {
+      Params() : windowWidth(9), windowHeight(7), minDisp(0), maxDisp(128) {}
       int windowWidth; //the width of the cost calculation window
       int windowHeight; //the height of the cost calculation window
       int minDisp; //minimum disparity value

@@ -14,5 +14,8 @@
 
 #include <costCompute/adCost.h>
 #include <costCompute/censusCost.h>
+#include <costCompute/adCensusCost.h>
+
+#include <dispCompute/dispCompute.h>
 
 #endif //!__LIB_STEREO_MATCH_H_

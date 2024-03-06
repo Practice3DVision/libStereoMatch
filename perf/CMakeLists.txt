@@ -23,3 +23,15 @@ target_link_libraries(
     benchmark::benchmark
     StereoMatch
 )
+
+add_executable(
+    PerfermanceDispCompute
+    ${CMAKE_CURRENT_SOURCE_DIR}/perfDispCompute.cpp
+)
+
+target_link_libraries(
+    PerfermanceDispCompute
+    PRIVATE
+    benchmark::benchmark
+    StereoMatch
+)

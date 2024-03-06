@@ -50,21 +50,21 @@ class Teddy : public testing::Test {
 
 TEST_F(Cones, testADCostColor) {
     auto params = ADCost::Params();
-    params.windowWidth = 3;
-    params.windowHeight = 3;
+    params.windowWidth = 9;
+    params.windowHeight = 7;
     params.minDisp = 0;
     params.maxDisp = 4;
     auto adCostComputer = ADCost::create(params);
     Mat out;
     adCostComputer->compute(left, right, out);
 
-    ASSERT_LE(abs(out.ptr<Vec4f>(9)[9][0] - 802), 1);
+    ASSERT_LE(abs(out.ptr<Vec4f>(9)[9][0] - 1671.3), 1);
 }
 
 TEST_F(Cones, testADCostGray) {
     auto params = ADCost::Params();
-    params.windowWidth = 3;
-    params.windowHeight = 3;
+    params.windowWidth = 9;
+    params.windowHeight = 7;
     params.minDisp = 0;
     params.maxDisp = 4;
     auto adCostComputer = ADCost::create(params);
@@ -72,13 +72,13 @@ TEST_F(Cones, testADCostGray) {
     transformToGray();
     adCostComputer->compute(left, right, out);
 
-    ASSERT_LE(abs(out.ptr<Vec4f>(17)[17][0] - 271), 1);
+    ASSERT_LE(abs(out.ptr<Vec4f>(17)[17][0] - 860), 1);
 }
 
 TEST_F(Cones, testCensusCost) {
     auto params = CensusCost::Params();
-    params.windowWidth = 3;
-    params.windowHeight = 3;
+    params.windowWidth = 9;
+    params.windowHeight = 7;
     params.minDisp = 0;
     params.maxDisp = 4;
     auto censusCostComputer = CensusCost::create(params);
@@ -86,6 +86,20 @@ TEST_F(Cones, testCensusCost) {
     transformToGray();
     censusCostComputer->compute(left, right, out);
 
-    ASSERT_EQ(out.ptr<Vec4f>(25)[25][0], 1);
-    ASSERT_EQ(out.ptr<Vec4f>(25)[25][1], 3);
+    ASSERT_EQ(out.ptr<Vec4f>(25)[25][0], 24);
+    ASSERT_EQ(out.ptr<Vec4f>(25)[25][1], 24);
+}
+
+TEST_F(Cones, testADCensusCost) {
+    auto params = ADCensusCost::Params();
+    params.windowWidth = 9;
+    params.windowHeight = 7;
+    params.minDisp = 0;
+    params.maxDisp = 4;
+    params.adWeight = 10.f;
+    params.censusWeight = 30.f;
+    auto adCensusComputer = ADCensusCost::create(params);
+    Mat out;
+    transformToGray();
+    adCensusComputer->compute(left, right, out);
 }

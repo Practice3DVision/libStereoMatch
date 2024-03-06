@@ -1,5 +1,5 @@
 /**
- * @file adCost.h
+ * @file adCensusCost.h
  * @author Liu Yunhuang (1369215984@qq.com)
  * @brief 
  * @version 0.1
@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2024
  * 
  */
-
-#ifndef __AD_COST_H_
-#define __AD_COST_H_
+ 
+#ifndef __AD_CENSUS_COST_H_
+#define __AD_CENSUS_COST_H_
 
 #include <libStereoMatchConfig.h>
 
@@ -18,21 +18,23 @@
 
 namespace libSM {
 /**
- * @brief AD Cost Calculator
+ * @brief ADCensus Cost Calculator
  * 
  */
-class LIBSM_API ADCost : public CostComputer {
+class LIBSM_API ADCensusCost : public CostComputer {
   public:
     /**
-     * @brief parameters in the AD cost calculator.
+     * @brief parameters in the ADCensus cost calculator.
      * 
      */
     struct Params {
-      Params() : windowWidth(9), windowHeight(7), minDisp(0), maxDisp(128) {}
+      Params() : windowWidth(9), windowHeight(7), minDisp(0), maxDisp(128), adWeight(10), censusWeight(30) {}
       int windowWidth; //the width of the cost calculation window
       int windowHeight; //the height of the cost calculation window
       int minDisp; //minimum disparity value
-      int maxDisp; //maximum disparity value
+      int maxDisp; //maximum disparity value.
+      float adWeight; //weight of ad
+      float censusWeight; //weight of census
     };
     /**
      * @brief create a cost calculator
@@ -53,4 +55,4 @@ class LIBSM_API ADCost : public CostComputer {
 };
 } // namespace libSM
 
-#endif //! AD_COST_H_
+#endif //! __AD_CENSUS_COST_H_

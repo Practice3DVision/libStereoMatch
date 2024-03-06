@@ -48,7 +48,7 @@ uint64_t CensusCostImpl::getWindowPixelsCensus(const Mat &img, const int x,
     for (int i = -halfHeight; i <= halfHeight; ++i) {
         for (int j = -halfWidth; j <= halfWidth; ++j) {
             census += (img.ptr<uchar>(y + i)[x + j] > centerGray);
-            if(i != halfHeight || j != halfWidth) {
+            if (i != halfHeight || j != halfWidth) {
                 census <<= 1;
             }
         }
@@ -97,18 +97,31 @@ void CensusCostImpl::compute(const Mat &left, const Mat &right, Mat &out) {
     }
 
 #pragma omp parallel for default(shared) schedule(static)
-    for (int i = halfHeight; i < out.rows - halfHeight; ++i) {
+    for (int i = 0; i < out.rows; ++i) {
         auto ptrLeftCensus = leftCensus.ptr<uint64_t>(i);
         auto ptrRightCensus = rightCensus.ptr<uint64_t>(i);
-        for (int j = halfWidth; j < out.cols - halfWidth; ++j) {
+
+        for (int j = 0; j < out.cols; ++j) {
+
+            if (j < halfWidth || j > out.cols - halfWidth - 1 ||
+                i < halfHeight || i > out.rows - halfHeight - 1) {
+                for (int d = 0; d < dispRange; ++d) {
+                    out.ptr<float>(i)[dispRange * j + d] = FLT_MAX;
+                }
+                continue;
+            }
+
             auto leftCensusVal = ptrLeftCensus[j];
+
             for (int d = 0; d < dispRange; ++d) {
+
                 if (j - d < halfWidth || j - d > out.cols - halfWidth) {
                     out.ptr<float>(i)[dispRange * j + d] = FLT_MAX;
                     continue;
                 }
 
-                out.ptr<float>(i)[dispRange * j + d] = hammingDistance(leftCensusVal, ptrRightCensus[j - d]);
+                out.ptr<float>(i)[dispRange * j + d] =
+                    hammingDistance(leftCensusVal, ptrRightCensus[j - d]);
             }
         }
     }
