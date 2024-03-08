@@ -25,11 +25,11 @@ namespace libSM {
  */
 struct DispComputeParams {
     DispComputeParams()
-        : lrCheck(true), uniqueCheck(true), subpixelFitting(true), minDisp(0),
+        : enableLRCheck(true), enableUniqueCheck(true), enableSubpixelFitting(true), minDisp(0),
           maxDisp(64), uniquenessRatio(0.95f), lrCheckThreshod(1) {}
-    bool lrCheck;          // left-right consistency check
-    bool uniqueCheck;      // consistency check
-    bool subpixelFitting;  // subpixel fitting
+    bool enableLRCheck;          // left-right consistency check
+    bool enableUniqueCheck;      // consistency check
+    bool enableSubpixelFitting;  // subpixel fitting
     float uniquenessRatio; // uniqueness ratio
     int lrCheckThreshod;   // left and right consistency threshold
     int minDisp;           // minimum disparity value

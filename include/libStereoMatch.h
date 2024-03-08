@@ -24,4 +24,6 @@
 
 #include <dispOptimiztion/dispOptimiztion.h>
 
+#include <sgm.h>
+
 #endif //!__LIB_STEREO_MATCH_H_

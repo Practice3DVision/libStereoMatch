@@ -34,6 +34,7 @@ class LIBSM_API MultipathAggregation : public CostAggregation {
         float P1;             // penalty coefficient for disparity continuity
         float P2;             // penalty coefficient for disparity no continuity
     };
+    virtual ~MultipathAggregation() {}
     /**
      * @brief create MultiPathAggregation
      *

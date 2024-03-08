@@ -80,9 +80,9 @@ TEST_F(Cones, testMultipathAggregation) {
     Mat disp;
     {
         auto params = DispComputeParams();
-        params.lrCheck = true;
-        params.uniqueCheck = true;
-        params.subpixelFitting = true;
+        params.enableLRCheck = true;
+        params.enableUniqueCheck = true;
+        params.enableSubpixelFitting = true;
         params.lrCheckThreshod = 1;
         params.uniquenessRatio = 0.95f;
         params.minDisp = 0;

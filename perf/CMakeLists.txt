@@ -59,3 +59,15 @@ target_link_libraries(
     benchmark::benchmark
     StereoMatch
 )
+
+add_executable(
+    PerfermanceSGM
+    ${CMAKE_CURRENT_SOURCE_DIR}/perfSGM.cpp
+)
+
+target_link_libraries(
+    PerfermanceSGM
+    PRIVATE
+    benchmark::benchmark
+    StereoMatch
+)

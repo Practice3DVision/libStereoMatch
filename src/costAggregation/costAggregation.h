@@ -25,6 +25,7 @@ namespace libSM {
  */
 class LIBSM_API CostAggregation {
   public:
+    virtual ~CostAggregation() {}
     /**
      * @brief aggregation cost
      *

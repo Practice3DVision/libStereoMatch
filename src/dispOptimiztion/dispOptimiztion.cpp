@@ -98,13 +98,13 @@ void dispOptimiz(const Mat &dispMap, Mat &out, const DispOptParams params) {
     if (out.empty())
         out = dispMap.clone();
 
-    if (params.bilateralFilter) {
+    if (params.enableBilateralFilter) {
         bilateralFilter(dispMap, out, params.d, params.sigmaColor,
                         params.sigmaSpace);
     }
 
-    if (params.removeSmallArea) {
-        removeSmallArea((params.bilateralFilter) ? out : dispMap, out,
+    if (params.enableRemoveSmallArea) {
+        removeSmallArea((params.enableBilateralFilter) ? out : dispMap, out,
                         params.dispDomainThreshold, params.smallAreaThreshold);
     }
 }

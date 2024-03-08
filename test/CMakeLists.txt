@@ -61,8 +61,22 @@ target_link_libraries(
     StereoMatch
 )
 
+add_executable(
+    TestSGM
+    ${CMAKE_CURRENT_SOURCE_DIR}/testSGM.cpp
+)
+
+target_link_libraries(
+    TestSGM
+    PRIVATE
+    gtest_main
+    StereoMatch
+)
+
+
 include(GoogleTest)
 gtest_discover_tests(TestCostCompute)
 gtest_discover_tests(TestDispCompute)
 gtest_discover_tests(TestCostAggregation)
 gtest_discover_tests(TestDispOptimiztion)
+gtest_discover_tests(TestSGM)

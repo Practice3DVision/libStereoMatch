@@ -333,8 +333,13 @@ void MultipathAggregationImpl::aggregation(const cv::Mat &left,
                                            cv::Mat &aggregationCost) {
     CV_Assert(!cost.empty());
 
-    if (aggregationCost.empty())
+    if(!params_.enableHonrizon && !params_.enableVertiacl && !params_.enableNegtive45 && !params_.enablePostive45) {
+        aggregationCost = cost;
+        return;
+    }
+    else {
         aggregationCost = Mat(cost.size(), cost.type(), Scalar(0.f));
+    }
 
     if (params_.enableHonrizon) {
         Mat temp = Mat(cost.size(), cost.type(), Scalar(0.f));

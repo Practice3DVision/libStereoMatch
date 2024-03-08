@@ -48,37 +48,24 @@ class Teddy : public testing::Test {
         }
 };
 
-TEST_F(Cones, testWinnerTakesAll) {
-    Mat cost;
-    {
-        auto params = ADCensusCost::Params();
-        params.windowWidth = 9;
-        params.windowHeight = 7;
-        params.minDisp = 0;
-        params.maxDisp = 64;
-        params.adWeight = 10.f;
-        params.censusWeight = 30.f;
+TEST_F(Cones, testSGMGray) {
+    transformToGray();
 
-        transformToGray();
+    auto params = SGM::Params();
+    auto sgm = SGM::create(params);
 
-        auto adCensusComputer = ADCensusCost::create(params);
-        adCensusComputer->compute(left, right, cost);
-    }
+    Mat disparityMap;
+    sgm->match(left, right, disparityMap);
 
-    Mat disp;
-    {
-        auto params = DispComputeParams();
-        params.enableLRCheck = true;
-        params.enableUniqueCheck = true;
-        params.enableSubpixelFitting = true;
-        params.lrCheckThreshod = 1;
-        params.uniquenessRatio = 0.98f;
-        params.minDisp = 0;
-        params.maxDisp = 64;
+    ASSERT_LE(abs(disparityMap.ptr<float>(301)[308] - 40), 1.f);
+}
 
-        winnerTakesAll(cost, disp, params);
+TEST_F(Cones, testSGMColor) {
+    auto params = SGM::Params();
+    auto sgm = SGM::create(params);
 
-    }
+    Mat disparityMap;
+    sgm->match(left, right, disparityMap);
 
-    ASSERT_LE(abs(disp.ptr<float>(301)[308] - 40), 1.f);
+    ASSERT_LE(abs(disparityMap.ptr<float>(301)[308] - 40), 1.f);
 }

@@ -24,8 +24,8 @@ namespace libSM {
      * 
      */
     struct DispOptParams {
-        bool bilateralFilter;    //enable bilateral filter
-        bool removeSmallArea;    //enable remove small area
+        bool enableBilateralFilter;    //enable bilateral filter
+        bool enableRemoveSmallArea;    //enable remove small area
         int smallAreaThreshold;  //small area threshild
         int dispDomainThreshold; //parallax connected domain threshold
         int d;                   //bilateral filtering filter field diameter

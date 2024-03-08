@@ -102,13 +102,14 @@ void winnerTakesAll(const Mat &costMap, Mat &dispMap,
                 }
             }
 
-            if (params.uniqueCheck && !uniqueCheck(majorMinCost, minorMinCost,
-                                                   params.uniquenessRatio)) {
+            if (params.enableUniqueCheck &&
+                !uniqueCheck(majorMinCost, minorMinCost,
+                             params.uniquenessRatio)) {
                 ptrDispMap[j] = 0.f;
                 continue;
             }
 
-            if (params.lrCheck &&
+            if (params.enableLRCheck &&
                 !lrCheck(ptrCostMap, j, j - (majorDisp + params.minDisp),
                          params.minDisp, params.maxDisp, costMap.cols,
                          params.lrCheckThreshod)) {
@@ -116,7 +117,7 @@ void winnerTakesAll(const Mat &costMap, Mat &dispMap,
                 continue;
             }
 
-            if (params.subpixelFitting &&
+            if (params.enableSubpixelFitting &&
                 (majorDisp != 0 && majorDisp != costMap.channels() - 1)) {
                 ptrDispMap[j] =
                     subpixelFitting(ptrCostMap, j, majorDisp, majorMinCost,

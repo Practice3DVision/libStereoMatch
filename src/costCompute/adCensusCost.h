@@ -38,6 +38,7 @@ class LIBSM_API ADCensusCost : public CostComputer {
         float adWeight;     // weight of ad
         float censusWeight; // weight of census
     };
+    virtual ~ADCensusCost() {}
     /**
      * @brief create a cost calculator
      *

@@ -62,9 +62,9 @@ BENCHMARK_DEFINE_F(Cones, perfDispOptimiztion)(benchmark::State& state) {
     Mat disp;
     {
         auto params = DispComputeParams();
-        params.lrCheck = true;
-        params.uniqueCheck = true;
-        params.subpixelFitting = true;
+        params.enableLRCheck = true;
+        params.enableUniqueCheck = true;
+        params.enableSubpixelFitting = true;
         params.lrCheckThreshod = 1;
         params.uniquenessRatio = 0.95f;
         params.minDisp = 0;
@@ -77,10 +77,10 @@ BENCHMARK_DEFINE_F(Cones, perfDispOptimiztion)(benchmark::State& state) {
     Mat optimizedDisp;
     {
         auto params = DispOptParams();
-        params.removeSmallArea = true;
+        params.enableRemoveSmallArea = true;
         params.dispDomainThreshold = 2;
         params.smallAreaThreshold = 10;
-        params.bilateralFilter = true;
+        params.enableBilateralFilter = true;
         params.d = 10;
         params.sigmaColor = 10;
         params.sigmaSpace = 20;

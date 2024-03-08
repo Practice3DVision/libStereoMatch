@@ -34,6 +34,7 @@ class LIBSM_API CensusCost : public CostComputer {
         int minDisp;      // minimum disparity value
         int maxDisp;      // maximum disparity value.
     };
+    virtual ~CensusCost() {}
     /**
      * @brief create a cost calculator
      *

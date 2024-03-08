@@ -34,6 +34,7 @@ class LIBSM_API ADCost : public CostComputer {
         int minDisp;      // minimum disparity value
         int maxDisp;      // maximum disparity value
     };
+    virtual ~ADCost() {}
     /**
      * @brief create a cost calculator
      *
