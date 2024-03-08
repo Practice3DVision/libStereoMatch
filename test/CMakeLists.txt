@@ -37,6 +37,32 @@ target_link_libraries(
     StereoMatch
 )
 
+add_executable(
+    TestCostAggregation
+    ${CMAKE_CURRENT_SOURCE_DIR}/testCostAggregation.cpp
+)
+
+target_link_libraries(
+    TestCostAggregation
+    PRIVATE
+    gtest_main
+    StereoMatch
+)
+
+add_executable(
+    TestDispOptimiztion
+    ${CMAKE_CURRENT_SOURCE_DIR}/testDispOptimiztion.cpp
+)
+
+target_link_libraries(
+    TestDispOptimiztion
+    PRIVATE
+    gtest_main
+    StereoMatch
+)
+
 include(GoogleTest)
 gtest_discover_tests(TestCostCompute)
 gtest_discover_tests(TestDispCompute)
+gtest_discover_tests(TestCostAggregation)
+gtest_discover_tests(TestDispOptimiztion)

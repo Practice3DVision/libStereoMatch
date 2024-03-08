@@ -35,3 +35,27 @@ target_link_libraries(
     benchmark::benchmark
     StereoMatch
 )
+
+add_executable(
+    PerfermanceCostAggregation
+    ${CMAKE_CURRENT_SOURCE_DIR}/perfCostAggregation.cpp
+)
+
+target_link_libraries(
+    PerfermanceCostAggregation
+    PRIVATE
+    benchmark::benchmark
+    StereoMatch
+)
+
+add_executable(
+    PerfermanceDispOptimiztion
+    ${CMAKE_CURRENT_SOURCE_DIR}/perfDispOptimiztion.cpp
+)
+
+target_link_libraries(
+    PerfermanceDispOptimiztion
+    PRIVATE
+    benchmark::benchmark
+    StereoMatch
+)

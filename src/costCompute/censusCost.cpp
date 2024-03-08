@@ -78,10 +78,10 @@ void CensusCostImpl::compute(const Mat &left, const Mat &right, Mat &out) {
     const int dispRange = params_.maxDisp - params_.minDisp;
 
     if (out.empty())
-        out = Mat(left.size(), CV_32FC(dispRange));
+        out = Mat(left.size(), CV_32FC(dispRange), Scalar(0.f));
 
-    Mat leftCensus = Mat(left.size(), CV_8UC(8), cv::Scalar(0));
-    Mat rightCensus = Mat(right.size(), CV_8UC(8), cv::Scalar(0));
+    Mat leftCensus = Mat(left.size(), CV_8UC(8), Scalar(0));
+    Mat rightCensus = Mat(right.size(), CV_8UC(8), Scalar(0));
 
     const int halfWidth = params_.windowWidth / 2;
     const int halfHeight = params_.windowHeight / 2;

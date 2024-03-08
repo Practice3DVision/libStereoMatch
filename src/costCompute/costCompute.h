@@ -1,12 +1,12 @@
 /**
  * @file costCompute.h
  * @author Liu Yunhuang (1369215984@qq.com)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2024-03-06
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 
 #ifndef __COST_COMPUTE_H_
@@ -21,7 +21,7 @@ class Mat;
 namespace libSM {
 /**
  * @brief abstract base class for cost calculation
- * 
+ *
  */
 class LIBSM_API CostComputer {
   public:

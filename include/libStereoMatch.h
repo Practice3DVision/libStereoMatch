@@ -12,10 +12,16 @@
 #ifndef __LIB_STEREO_MATCH_H_
 #define __LIB_STEREO_MATCH_H_
 
+#include <costCompute/costCompute.h>
 #include <costCompute/adCost.h>
 #include <costCompute/censusCost.h>
 #include <costCompute/adCensusCost.h>
 
+#include <costAggregation/costAggregation.h>
+#include <costAggregation/multipathAggregation.h>
+
 #include <dispCompute/dispCompute.h>
+
+#include <dispOptimiztion/dispOptimiztion.h>
 
 #endif //!__LIB_STEREO_MATCH_H_
