@@ -31,12 +31,12 @@ bool uniqueCheck(const float majorMinCost, const float minorMinCost,
  * @param dispRange         parallax interval
  * @param cols              number of image columns
  * @param lrCheckThreshod   left and right consistency threshold
- * @return true             pass
- * @return false            not passed
+ * @return pair<bool, bool> first: pass or no pass, second: is occlusions or
+ * mismatches
  */
-bool lrCheck(const float *ptrCostMap, const int lx, const int rx,
-             const int minDisp, const int maxDisp, const int cols,
-             const int lrCheckThreshod = 1) {
+pair<bool, bool> lrCheck(const float *ptrCostMap, const int lx, const int rx,
+                         const int minDisp, const int maxDisp, const int cols,
+                         const int lrCheckThreshod = 1) {
     int rightBestDisp = lx - rx;
     float minCost = FLT_MAX;
     const int dispRange = maxDisp - minDisp;
@@ -54,7 +54,8 @@ bool lrCheck(const float *ptrCostMap, const int lx, const int rx,
         }
     }
 
-    return abs(rx - rightBestDisp + minDisp - lx) <= lrCheckThreshod;
+    return make_pair(abs(rx - rightBestDisp + minDisp - lx) <= lrCheckThreshod,
+                     (lx - rx) < abs(rightBestDisp));
 }
 
 /**
@@ -105,16 +106,21 @@ void winnerTakesAll(const Mat &costMap, Mat &dispMap,
             if (params.enableUniqueCheck &&
                 !uniqueCheck(majorMinCost, minorMinCost,
                              params.uniquenessRatio)) {
-                ptrDispMap[j] = 0.f;
+                ptrDispMap[j] = NONE_PIXEL;
                 continue;
             }
 
-            if (params.enableLRCheck &&
-                !lrCheck(ptrCostMap, j, j - (majorDisp + params.minDisp),
-                         params.minDisp, params.maxDisp, costMap.cols,
-                         params.lrCheckThreshod)) {
-                ptrDispMap[j] = 0.f;
-                continue;
+            if (params.enableLRCheck) {
+                auto lrCheckResult =
+                    lrCheck(ptrCostMap, j, j - (majorDisp + params.minDisp),
+                            params.minDisp, params.maxDisp, costMap.cols,
+                            params.lrCheckThreshod);
+
+                if (!lrCheckResult.first) {
+                    ptrDispMap[j] = lrCheckResult.second ? OCCLUDED_PIXEL
+                                                         : MISMATCHED_PIXEL;
+                    continue;
+                }
             }
 
             if (params.enableSubpixelFitting &&

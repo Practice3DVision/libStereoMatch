@@ -37,13 +37,14 @@ class LIBSM_API SGM : public Algorithm {
     struct Params {
         Params()
             : enableHonrizon(true), enableVertiacl(true), enablePostive45(true),
-              enableNegtive45(true), enableBilateralFilter(true),
+              enableNegtive45(true), enableBilateralFilter(false),
               enableRemoveSmallArea(true), enableLRCheck(true),
               enableUniqueCheck(true), enableSubpixelFitting(true),
-              windowWidth(9), windowHeight(7), minDisp(0), maxDisp(64), P1(10),
-              P2(150), lrCheckThreshod(1), uniquenessRatio(0.95),
-              smallAreaThreshold(10), dispDomainThreshold(2), d(10),
-              sigmaColor(10), sigmaSpace(10) {}
+              enableMedianFilter(true), enableDispFill(true), windowWidth(9),
+              windowHeight(7), minDisp(0), maxDisp(64), P1(10), P2(150),
+              lrCheckThreshod(1), uniquenessRatio(0.95), smallAreaThreshold(20),
+              dispDomainThreshold(1), k(3), d(10), sigmaColor(10),
+              sigmaSpace(10) {}
         bool enableHonrizon;        // enable aggregation on horizontal line
         bool enableVertiacl;        // enable aggregation on vertical line
         bool enablePostive45;       // enable aggregation on postive 45 line
@@ -53,6 +54,8 @@ class LIBSM_API SGM : public Algorithm {
         bool enableLRCheck;         // left-right consistency check
         bool enableUniqueCheck;     // consistency check
         bool enableSubpixelFitting; // subpixel fitting
+        bool enableMedianFilter;    // enable median filter
+        bool enableDispFill;        // enable fill the background or prospect
         int windowWidth;            // the width of the cost calculation window
         int windowHeight;           // the height of the cost calculation window
         int minDisp;                // minimum disparity value
@@ -63,6 +66,7 @@ class LIBSM_API SGM : public Algorithm {
         float uniquenessRatio;   // uniqueness ratio
         int smallAreaThreshold;  // small area threshild
         int dispDomainThreshold; // parallax connected domain threshold
+        int k;                   // median filtering filter kernel size
         int d;                   // bilateral filtering filter field diameter
         float sigmaColor; // standard deviation of Gaussian function in color
                           // space

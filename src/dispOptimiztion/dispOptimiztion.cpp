@@ -85,8 +85,99 @@ void removeSmallArea(const Mat &dispMap, Mat &out,
 
             if (area.size() < smallAreaThreshold) {
                 for (auto loc : area) {
-                    out.ptr<float>(loc.second)[loc.first] = 0.f;
+                    out.ptr<float>(loc.second)[loc.first] = NONE_PIXEL;
                 }
+            }
+        }
+    }
+}
+
+/**
+ * @brief median filter for float-type image
+ *
+ * @param dispMap disparity map
+ * @param out filtered disparity map
+ * @param k kernel size
+ */
+void medianFilter(const Mat &dispMap, Mat &out, const int k) {
+    const int halfSize = k / 2;
+    const int medianIndex = (k * k) / 2;
+
+#pragma omp parallel for schedule(dynamic) default(shared)
+    for (int i = halfSize; i < dispMap.rows - halfSize; ++i) {
+        auto ptrOut = out.ptr<float>(i);
+
+        for (int j = halfSize; j < dispMap.cols - halfSize; ++j) {
+            vector<float> disp;
+
+            for (int y = -halfSize; y <= halfSize; ++y) {
+                for (int x = -halfSize; x <= halfSize; ++x) {
+                    disp.emplace_back(dispMap.ptr<float>(i + y)[j + x]);
+                }
+            }
+
+            std::sort(disp.begin(), disp.end());
+            ptrOut[j] = disp[medianIndex];
+        }
+    }
+}
+
+/**
+ * @brief fill disparity map
+ *
+ * @param dispMap disparity map
+ * @param out filled disparity map
+ */
+void dispFill(const Mat &dispMap, Mat &out) {
+    const vector<pair<int, int>> direction = {
+        make_pair(0, -1), make_pair(1, -1), make_pair(1, 0),
+        make_pair(1, 1),  make_pair(0, 1),  make_pair(-1, 1),
+        make_pair(-1, 0), make_pair(-1, -1)};
+
+#pragma omp parallel for schedule(dynamic) default(shared)
+    for (int i = 0; i < dispMap.rows; ++i) {
+        auto ptrDispMap = dispMap.ptr<float>(i);
+        auto ptrOut = out.ptr<float>(i);
+
+        for (int j = 0; j < dispMap.cols; ++j) {
+            auto state = make_pair(IS_OCCLUDED_PIXEL(ptrDispMap[j]),
+                                   IS_MISMATCHED_PIXEL(ptrDispMap[j]) || IS_NONE_PIXEL(ptrDispMap[j]));
+            if (state.first || state.second) {
+                vector<float> disp;
+
+                for (int d = 0; d < direction.size(); ++d) {
+                    auto curLocX = j;
+                    auto curLocY = i;
+                    bool isFind = false;
+
+                    do {
+                        curLocX += direction[d].first;
+                        curLocY += direction[d].second;
+
+                        if (curLocX < 0 || curLocX > dispMap.cols - 1 ||
+                            curLocY < 0 || curLocY > dispMap.rows - 1) {
+                            break;
+                        }
+
+                        auto curVal = dispMap.ptr<float>(curLocY)[curLocX];
+
+                        if (!IS_OCCLUDED_PIXEL(curVal) &&
+                            !IS_MISMATCHED_PIXEL(curVal) &&
+                            !IS_NONE_PIXEL(curVal)) {
+                            disp.emplace_back(curVal);
+                            isFind = true;
+                            break;
+                        }
+                    } while (true);
+
+                    if (!isFind) {
+                        disp.emplace_back(0);
+                    }
+                }
+
+                std::sort(disp.begin(), disp.end());
+
+                ptrOut[j] = state.first ? disp[1] : disp[disp.size() / 2];
             }
         }
     }
@@ -98,14 +189,23 @@ void dispOptimiz(const Mat &dispMap, Mat &out, const DispOptParams params) {
     if (out.empty())
         out = dispMap.clone();
 
-    if (params.enableBilateralFilter) {
-        bilateralFilter(dispMap, out, params.d, params.sigmaColor,
-                        params.sigmaSpace);
+    if (params.enableRemoveSmallArea) {
+        removeSmallArea(dispMap, out, params.dispDomainThreshold,
+                        params.smallAreaThreshold);
     }
 
-    if (params.enableRemoveSmallArea) {
-        removeSmallArea((params.enableBilateralFilter) ? out : dispMap, out,
-                        params.dispDomainThreshold, params.smallAreaThreshold);
+    if (params.enableDispFill) {
+        Mat temp = out.clone();
+        dispFill(temp, out);
+    }
+
+    if (params.enableMedianFilter) {
+        Mat temp = out.clone();
+        medianFilter(temp, out, params.k);
+    } else if (params.enableBilateralFilter) {
+        Mat temp = out.clone();
+        bilateralFilter(temp, out, params.d, params.sigmaColor,
+                        params.sigmaSpace);
     }
 }
 

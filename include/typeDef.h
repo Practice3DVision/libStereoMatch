@@ -29,6 +29,13 @@
 #define LIBSM_API
 #endif
 
+#define OCCLUDED_PIXEL -0.111f
+#define MISMATCHED_PIXEL 0.111f
+#define NONE_PIXEL 0.f
+#define IS_OCCLUDED_PIXEL(val) (std::abs(val - OCCLUDED_PIXEL) < 0.0001f)
+#define IS_MISMATCHED_PIXEL(val) (std::abs(val - MISMATCHED_PIXEL) < 0.0001f)
+#define IS_NONE_PIXEL(val) (std::abs(val - NONE_PIXEL) < 0.0001f)
+
 namespace libSM {
     template <typename T>
     using Ptr = std::shared_ptr<T>;

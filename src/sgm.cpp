@@ -95,6 +95,9 @@ void SGMImpl::match(const cv::Mat &left, const cv::Mat &right, cv::Mat &dispMap)
         params.d = params_.d;
         params.sigmaColor = params_.sigmaColor;
         params.sigmaSpace = params_.sigmaSpace;
+        params.enableMedianFilter = params_.enableMedianFilter;
+        params.k = params_.k;
+        params.enableDispFill = params_.enableDispFill;
 
         dispOptimiz(disp, dispMap, params);
     }
